@@ -256,3 +256,383 @@ section {
     opacity: 1;
     transform: translateY(0);
 }
+/* =========================================
+   CURSOR PERSONALIZADO
+   ========================================= */
+#cursor-dot, #cursor-outline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+}
+
+#cursor-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent-color);
+}
+
+#cursor-outline {
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--accent-color);
+    opacity: 0.6;
+    transition: width 0.2s ease, height 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
+}
+
+#cursor-outline.hovering {
+    width: 55px;
+    height: 55px;
+    opacity: 0.9;
+    background: rgba(212, 175, 55, 0.08);
+}
+
+body { cursor: none; }
+a, button { cursor: none; }
+
+@media (hover: none), (pointer: coarse) {
+    #cursor-dot, #cursor-outline { display: none; }
+    body, a, button { cursor: auto; }
+}
+
+/* =========================================
+   FILTROS DE LIBROS
+   ========================================= */
+.book-filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.filter-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--text-color);
+    padding: 0.6rem 1.4rem;
+    border-radius: 30px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.filter-btn.active {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: #0a0a0a;
+    font-weight: 600;
+}
+
+/* =========================================
+   ESTANTE DE LIBROS
+   ========================================= */
+.book-shelf {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 2.5rem;
+    perspective: 1200px;
+}
+
+.book-card {
+    position: relative;
+    height: 280px;
+    border-radius: 4px 8px 8px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    box-shadow: -6px 8px 20px rgba(0,0,0,0.5), inset 6px 0 10px rgba(0,0,0,0.25);
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.5,0,0,1), box-shadow 0.5s ease;
+    animation: fadeInBook 0.6s ease backwards;
+}
+
+.book-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 10px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 4px 0 0 4px;
+}
+
+.book-card:hover {
+    transform: translateY(-10px) rotateY(-6deg);
+    box-shadow: -10px 16px 30px rgba(0,0,0,0.6);
+}
+
+.book-card .book-icon {
+    font-size: 2.2rem;
+    margin-bottom: 0.8rem;
+    opacity: 0.85;
+}
+
+.book-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    line-height: 1.3;
+    margin-bottom: 0.4rem;
+}
+
+.book-card .book-author {
+    font-size: 0.75rem;
+    opacity: 0.75;
+    font-style: italic;
+}
+
+.book-card.filtered-out {
+    display: none;
+}
+
+@keyframes fadeInBook {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Paleta de portadas (se asigna por índice desde JS via clase book-hue-N) */
+.book-hue-1 { background: linear-gradient(160deg, #7a2e2e, #2c1010); }
+.book-hue-2 { background: linear-gradient(160deg, #2e4a3f, #10221a); }
+.book-hue-3 { background: linear-gradient(160deg, #2e3a7a, #101527); }
+.book-hue-4 { background: linear-gradient(160deg, #6a4a2e, #241a10); }
+.book-hue-5 { background: linear-gradient(160deg, #5a2e6a, #1e1027); }
+.book-hue-6 { background: linear-gradient(160deg, #2e6a63, #0f2320); }
+
+.books-hint {
+    text-align: center;
+    margin-top: 2.5rem;
+    opacity: 0.6;
+    font-style: italic;
+}
+
+/* =========================================
+   MODAL DE LIBRO ("abrir el libro")
+   ========================================= */
+.book-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.book-modal.open { display: flex; }
+
+.book-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.book-modal.open .book-modal-backdrop { opacity: 1; }
+
+.book-modal-content {
+    position: relative;
+    display: flex;
+    max-width: 700px;
+    width: 100%;
+    max-height: 85vh;
+    background: var(--card-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+    transform: perspective(1600px) rotateY(-90deg);
+    transform-origin: left center;
+    opacity: 0;
+    transition: transform 0.6s cubic-bezier(0.5,0,0,1), opacity 0.4s ease;
+}
+
+.book-modal.open .book-modal-content {
+    transform: perspective(1600px) rotateY(0deg);
+    opacity: 1;
+}
+
+.book-modal-cover {
+    flex: 0 0 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+}
+
+.book-modal-body {
+    padding: 2.5rem;
+    overflow-y: auto;
+}
+
+.book-modal-genre {
+    display: inline-block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+}
+
+.book-modal-body h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    margin-bottom: 0.3rem;
+}
+
+.book-modal-author {
+    opacity: 0.7;
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+.book-modal-rating {
+    margin-bottom: 1.2rem;
+    letter-spacing: 3px;
+}
+
+.book-modal-review {
+    line-height: 1.7;
+    color: #ddd;
+}
+
+.book-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.2rem;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.8rem;
+    z-index: 5;
+}
+
+@media (max-width: 600px) {
+    .book-modal-content { flex-direction: column; max-height: 90vh; }
+    .book-modal-cover { flex: 0 0 120px; }
+}
+
+/* =========================================
+   SECCIÓN INSTAGRAM
+   ========================================= */
+.instagram-subtitle {
+    text-align: center;
+    opacity: 0.7;
+    margin-top: -2rem;
+    margin-bottom: 3rem;
+}
+
+.instagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.ig-post {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 6px;
+    overflow: hidden;
+    display: block;
+}
+
+.ig-post img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease, filter 0.5s ease;
+}
+
+.ig-post::after {
+    content: '♡ Ver en Instagram';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.ig-post:hover img {
+    transform: scale(1.08);
+    filter: brightness(0.7);
+}
+
+.ig-post:hover::after {
+    opacity: 1;
+}
+
+.ig-follow-btn {
+    display: block;
+    width: fit-content;
+    margin: 3rem auto 0;
+    padding: 0.9rem 2.2rem;
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    text-decoration: none;
+    border-radius: 30px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.ig-follow-btn:hover {
+    background: var(--accent-color);
+    color: #0a0a0a;
+}
+
+/* Botón flotante */
+.ig-floating-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    color: #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-style: italic;
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    z-index: 1500;
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+}
+
+.ig-floating-btn.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.ig-floating-btn:hover {
+    transform: scale(1.1);
+}

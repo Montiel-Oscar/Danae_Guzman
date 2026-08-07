@@ -8,20 +8,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
+
+    <!-- Cursor personalizado: punto + halo con retraso (trail tipo tinta) -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-outline"></div>
+
     <nav id="navbar">
         <div class="logo">Danae Guzmán</div>
         <ul class="nav-links">
             <li><a href="#galeria">Arte</a></li>
             <li><a href="#libros">Libros</a></li>
+            <li><a href="#instagram">Instagram</a></li>
         </ul>
     </nav>
 
     <header class="hero" id="hero">
         <!-- El video de fondo con IA -->
-        <video autoplay loop muted playsinline controls class="hero-video">
+        <video autoplay loop muted playsinline class="hero-video">
             <source src="assets/video/dragon-loop.mp4" type="video/mp4">
         </video>
-        
+
         <!-- Capa oscura para que el texto resalte -->
         <div class="hero-overlay"></div>
 
@@ -66,14 +72,54 @@
 
         <section id="libros" class="books-section">
             <h2 class="section-title">Reseñas Literarias</h2>
-            <div class="books-placeholder hidden-scroll">
-                <blockquote>
-                    "De los diversos instrumentos del hombre, el más asombroso es, sin duda, el libro..."
-                </blockquote>
-                <p>Las reseñas estarán disponibles próximamente.</p>
+
+            <!-- Filtros por género -->
+            <div class="book-filters">
+                <button class="filter-btn active" data-filter="todos">Todos</button>
+                <button class="filter-btn" data-filter="Ficción">Ficción</button>
+                <button class="filter-btn" data-filter="Poesía">Poesía</button>
+                <button class="filter-btn" data-filter="No ficción">No ficción</button>
+                <button class="filter-btn" data-filter="Clásico">Clásicos</button>
             </div>
+
+            <!-- El estante se genera dinámicamente desde script.js (array "books") -->
+            <div class="book-shelf" id="book-shelf"></div>
+
+            <p class="books-hint hidden-scroll">Toca un libro para abrirlo ✨</p>
+        </section>
+
+        <section id="instagram" class="instagram-section">
+            <h2 class="section-title">En Instagram</h2>
+            <p class="instagram-subtitle hidden-scroll">Proceso, bocetos y arte terminado — todos los días.</p>
+
+            <div class="instagram-grid" id="instagram-grid"></div>
+
+            <a href="https://www.instagram.com/book.ish_db/" target="_blank" rel="noopener" class="ig-follow-btn hidden-scroll">
+                Seguir en Instagram
+            </a>
         </section>
     </main>
+
+    <!-- Modal para "abrir" el libro seleccionado -->
+    <div class="book-modal" id="book-modal">
+        <div class="book-modal-backdrop" id="book-modal-backdrop"></div>
+        <div class="book-modal-content">
+            <button class="book-modal-close" id="book-modal-close">&times;</button>
+            <div class="book-modal-cover" id="modal-cover"></div>
+            <div class="book-modal-body">
+                <span class="book-modal-genre" id="modal-genre"></span>
+                <h3 id="modal-title"></h3>
+                <p class="book-modal-author" id="modal-author"></p>
+                <div class="book-modal-rating" id="modal-rating"></div>
+                <p class="book-modal-review" id="modal-review"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón flotante de Instagram -->
+    <a href="https://www.instagram.com/book.ish_db/" target="_blank" rel="noopener" class="ig-floating-btn" id="ig-floating-btn" aria-label="Síguenos en Instagram">
+        <span>@book.ish_db/</span>
+    </a>
 
     <script src="script.js"></script>
 </body>
