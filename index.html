@@ -3,130 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curaduría Visual & Literaria</title>
-
-    <!-- Tipografías: Cormorant para los títulos elegantes y Montserrat para los textos -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-    
+    <title>Danae Guzmán | Arte & Reseñas</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <!-- Menú de Navegación -->
     <nav id="navbar">
-        <div class="logo">M & A</div>
+        <div class="logo">Danae Guzmán</div>
         <ul class="nav-links">
-            <li><a href="#inicio">Inicio</a></li>
-            <li><a href="#galeria">Galería de Arte</a></li>
-            <li><a href="#resenas">Reseñas Literarias</a></li>
+            <li><a href="#galeria">Arte</a></li>
+            <li><a href="#libros">Libros</a></li>
         </ul>
     </nav>
 
-    <!-- Sección Hero (Fondo de pantalla completa) -->
-    <header id="inicio" class="hero">
+    <header class="hero" id="hero">
+        <!-- El video de fondo con IA -->
+        <video autoplay loop muted playsinline class="hero-video">
+            <source src="assets/video/dragon-loop2.mp4" type="video/mp4">
+        </video>
+        
+        <!-- Capa oscura para que el texto resalte -->
+        <div class="hero-overlay"></div>
+
         <div class="hero-content">
-            <span class="eyebrow">Exploración visual y crítica literaria</span>
-            <h1>ÉPICA &<br>LABERINTOS</h1>
-            <p class="subtitle">Arte clásico, estética medieval y la magia oculta en las letras.</p>
+            <h1 id="hero-title">Lienzos & Letras</h1>
+            <p>Explorando mundos a través del pincel y la palabra.</p>
         </div>
+        <div class="scroll-indicator">↓</div>
     </header>
 
-    <!-- Sección Collage (Inspirada en tu imagen de referencia) -->
-    <section class="collage-section">
-        <div class="collage-text">
-            <h2>ACÓLITOS DE LO INUSUAL Y LO ÉPICO</h2>
-            <p>Un espacio dedicado a quienes creen que las imágenes y los libros guardan memorias antiguas. Desde los senderos que se bifurcan hasta las cruzadas de caballeros templarios, aquí se esculpe un refugio para la imaginación desbordada.</p>
-            <a href="#galeria" class="btn-outline">Explorar la Galería &rarr;</a>
-        </div>
-        
-        <div class="collage-images">
-            <div class="polaroid p-1">
-                <img src="https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?auto=format&fit=crop&q=80&w=600" alt="Detalle medieval">
-                <p>Fig. 1 — Acero y Honor</p>
+    <main>
+        <section id="galeria" class="gallery-section">
+            <h2 class="section-title">Obras Recientes</h2>
+            <div class="gallery-grid">
+                <!-- Tarjetas con efecto 3D tilt -->
+                <div class="gallery-item tilt-card">
+                    <img src="assets/arte/barco.webp" alt="Barco">
+                    <div class="overlay"><span>Barco</span></div>
+                </div>
+                <div class="gallery-item tilt-card">
+                    <img src="assets/arte/caballero.webp" alt="Caballero">
+                    <div class="overlay"><span>Caballero</span></div>
+                </div>
+                <div class="gallery-item tilt-card">
+                    <img src="assets/arte/dragon.webp" alt="Dragón">
+                    <div class="overlay"><span>Dragón</span></div>
+                </div>
+                <div class="gallery-item tilt-card">
+                    <img src="assets/arte/flores.webp" alt="Flores">
+                    <div class="overlay"><span>Flores</span></div>
+                </div>
+                <div class="gallery-item tilt-card">
+                    <img src="assets/arte/paisaje.webp" alt="Paisaje">
+                    <div class="overlay"><span>Paisaje</span></div>
+                </div>
+                <div class="gallery-item tilt-card">
+                    <img src="assets/arte/piano.webp" alt="Piano">
+                    <div class="overlay"><span>Piano</span></div>
+                </div>
             </div>
-            <div class="polaroid p-2">
-                <img src="https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?auto=format&fit=crop&q=80&w=600" alt="Arquitectura clásica">
-                <p>Fig. 2 — El Laberinto</p>
-            </div>
-            <div class="polaroid p-3">
-                <img src="https://images.unsplash.com/photo-1535905557558-afc4877a26fc?auto=format&fit=crop&q=80&w=600" alt="Manuscrito">
-                <p>Fig. 3 — Letras antiguas</p>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Sección: Galería de Arte -->
-    <section id="galeria" class="art-gallery">
-        <div class="section-header">
-            <h2>El Lienzo</h2>
-            <p>Pinturas, texturas y visiones de épocas pasadas.</p>
-        </div>
-        <div class="gallery-grid">
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1578305698822-777263563914?auto=format&fit=crop&q=80&w=800" alt="Arte clásico">
-                <div class="overlay"><span>Óleo sobre lienzo</span></div>
+        <section id="libros" class="books-section">
+            <h2 class="section-title">Reseñas Literarias</h2>
+            <div class="books-placeholder hidden-scroll">
+                <blockquote>
+                    "De los diversos instrumentos del hombre, el más asombroso es, sin duda, el libro..."
+                </blockquote>
+                <p>Las reseñas estarán disponibles próximamente.</p>
             </div>
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1582561424761-fdacacdd639a?auto=format&fit=crop&q=80&w=800" alt="Estatua">
-                <div class="overlay"><span>Escultura y Claroscuro</span></div>
-            </div>
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1602928321679-560bb453f190?auto=format&fit=crop&q=80&w=800" alt="Arquitectura gótica">
-                <div class="overlay"><span>Arcos Góticos</span></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sección: Reseñas de Libros -->
-    <section id="resenas" class="book-reviews">
-        <div class="section-header dark">
-            <h2>La Biblioteca</h2>
-            <p>Nuestras lecturas, análisis y pensamientos.</p>
-        </div>
-        
-        <div class="reviews-container">
-            <!-- Reseña 1 -->
-            <article class="review-card">
-                <div class="book-image">
-                    <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=600" alt="Montañas épicas">
-                </div>
-                <div class="book-info">
-                    <h3>El Señor de los Anillos</h3>
-                    <span class="author">J.R.R. Tolkien</span>
-                    <p>La obra magna de la literatura fantástica. Un viaje que no solo define el coraje y la lealtad, sino que construye un mundo con una mitología y lenguaje propios inigualables.</p>
-                    <button class="btn-read">Leer Crítica</button>
-                </div>
-            </article>
-
-            <!-- Reseña 2 -->
-            <article class="review-card">
-                <div class="book-image">
-                    <img src="https://images.unsplash.com/photo-1524578974092-23b0a701d4a0?auto=format&fit=crop&q=80&w=600" alt="Libro vintage">
-                </div>
-                <div class="book-info">
-                    <h3>Ficciones</h3>
-                    <span class="author">Jorge Luis Borges</span>
-                    <p>Cuentos que funcionan como rompecabezas filosóficos. La genialidad de entrelazar la realidad con laberintos infinitos, bibliotecas inabarcables y espejos traicioneros.</p>
-                    <button class="btn-read">Leer Crítica</button>
-                </div>
-            </article>
-            
-            <!-- Reseña 3 -->
-            <article class="review-card">
-                <div class="book-image">
-                    <img src="https://images.unsplash.com/photo-1585664811087-47f65abbad64?auto=format&fit=crop&q=80&w=600" alt="Molino antiguo">
-                </div>
-                <div class="book-info">
-                    <h3>Don Quijote de la Mancha</h3>
-                    <span class="author">Miguel de Cervantes</span>
-                    <p>La cuna de la novela moderna. Una sátira brillante sobre la caballería que esconde una profunda melancolía y reflexión sobre la locura, el idealismo y la sociedad.</p>
-                    <button class="btn-read">Leer Crítica</button>
-                </div>
-            </article>
-        </div>
-    </section>
+        </section>
+    </main>
 
     <script src="script.js"></script>
 </body>
