@@ -13,6 +13,7 @@
 
 html {
     scroll-behavior: smooth;
+    scroll-snap-type: y proximity;
 }
 
 body {
@@ -26,7 +27,23 @@ h1, h2, h3, .logo {
     font-family: 'Playfair Display', serif;
 }
 
-/* Navbar */
+/* =========================================
+   BARRA DE PROGRESO DE SCROLL
+   ========================================= */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent-color), #fff6d8);
+    z-index: 2500;
+    transition: width 0.1s ease-out;
+}
+
+/* =========================================
+   NAVBAR
+   ========================================= */
 nav {
     position: fixed;
     top: 0;
@@ -50,6 +67,7 @@ nav {
 .nav-links {
     list-style: none;
     display: flex;
+    align-items: center;
     gap: 2rem;
 }
 
@@ -66,8 +84,23 @@ nav {
     color: var(--accent-color);
 }
 
-/* Hero Section */
-/* Hero Section */
+.nav-links .nav-ig {
+    opacity: 0.55;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: none;
+    font-style: italic;
+    border-left: 1px solid rgba(255,255,255,0.2);
+    padding-left: 1.6rem;
+}
+
+.nav-links .nav-ig:hover {
+    opacity: 1;
+}
+
+/* =========================================
+   HERO
+   ========================================= */
 .hero {
     height: 100vh;
     display: flex;
@@ -77,17 +110,16 @@ nav {
     text-align: center;
     position: relative;
     overflow: hidden;
-    /* Quitamos el fondo sólido si lo tuviera, para ver el video */
+    scroll-snap-align: start;
 }
 
-/* Nuevas reglas para el video */
 .hero-video {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Hace que el video llene toda la pantalla sin deformarse */
+    object-fit: cover;
     z-index: 0;
 }
 
@@ -97,28 +129,13 @@ nav {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.65); /* Oscurece el video un 65% */
+    background: rgba(0, 0, 0, 0.65);
     z-index: 1;
-}
-
-/* Aseguramos que el contenido esté por encima del video y la capa oscura */
-.hero-content {
-    z-index: 2; 
-    transition: transform 0.1s ease-out; /* Parallax effect */
-}
-
-.scroll-indicator {
-    position: absolute;
-    bottom: 40px;
-    font-size: 2rem;
-    animation: bounce 2s infinite;
-    color: var(--accent-color);
-    z-index: 2; /* Añadimos z-index aquí también */
 }
 
 .hero-content {
     z-index: 2;
-    transition: transform 0.1s ease-out; /* Parallax effect */
+    transition: transform 0.1s ease-out;
 }
 
 #hero-title {
@@ -129,133 +146,303 @@ nav {
     -webkit-text-fill-color: transparent;
 }
 
-.scroll-indicator {
+/* Selector de sección */
+.hero-selector {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    width: min(680px, 88vw);
+}
+
+.selector-panel {
+    position: relative;
+    flex: 1;
+    height: 190px;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    display: block;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    transition: transform 0.4s cubic-bezier(0.5,0,0,1), box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.selector-panel:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent-color);
+    box-shadow: 0 25px 55px rgba(0,0,0,0.6);
+}
+
+.selector-bg {
     position: absolute;
-    bottom: 40px;
-    font-size: 2rem;
-    animation: bounce 2s infinite;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease, filter 0.6s ease;
+    filter: brightness(0.6);
+}
+
+.selector-panel:hover .selector-bg {
+    transform: scale(1.1);
+    filter: brightness(0.75);
+}
+
+.selector-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.75) 100%);
+}
+
+.selector-label {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 1.2rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    text-align: left;
+}
+
+.selector-kicker {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
     color: var(--accent-color);
 }
 
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-    40% { transform: translateY(-15px); }
-    60% { transform: translateY(-7px); }
+.selector-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-style: italic;
+    color: #fff;
 }
 
-/* Sections */
-section {
-    padding: 100px 10%;
-    min-height: 100vh;
+@media (max-width: 600px) {
+    .hero-selector { flex-direction: column; }
+    .selector-panel { height: 140px; }
+    #hero-title { font-size: 3rem; }
+}
+
+/* =========================================
+   CARRUSEL A PANTALLA COMPLETA
+   ========================================= */
+.fullscreen-carousel {
+    position: relative;
+    height: 100vh;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-}
-
-.section-title {
-    font-size: 3rem;
-    text-align: center;
-    margin-bottom: 3rem;
-    position: relative;
-}
-
-.section-title::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 50px;
-    height: 2px;
-    background-color: var(--accent-color);
-}
-
-/* Gallery Grid */
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.gallery-item {
-    position: relative;
-    border-radius: 8px;
-    overflow: hidden;
-    cursor: pointer;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    transform-style: preserve-3d;
-    background: var(--card-bg);
-}
-
-.gallery-item img {
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
-
-.gallery-item:hover img {
-    transform: scale(1.05) translateZ(20px);
-}
-
-.overlay {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    opacity: 0;
-    display: flex;
-    justify-content: center;
     align-items: center;
-    transition: opacity 0.3s ease;
-    backdrop-filter: blur(2px);
+    justify-content: center;
+    overflow: hidden;
+    scroll-snap-align: start;
+    padding: 0;
 }
 
-.gallery-item:hover .overlay {
+.fs-bg {
+    position: absolute;
+    inset: -5%;
+    width: 110%;
+    height: 110%;
+    background-size: cover;
+    background-position: center;
+    filter: blur(50px) brightness(0.4) saturate(1.2);
+    opacity: 0;
+    transition: opacity 1s ease;
+    z-index: 0;
+}
+
+.fs-bg.active {
     opacity: 1;
 }
 
-.overlay span {
+.fs-section-label {
+    position: absolute;
+    top: 6.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
     font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
     font-style: italic;
-    color: #fff;
-    transform: translateY(20px);
-    transition: transform 0.3s ease;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    color: var(--accent-color);
+    opacity: 0.85;
 }
 
-.gallery-item:hover .overlay span {
-    transform: translateY(0);
+.fs-frame {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1400px;
+    height: 78vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5vw;
 }
 
-/* Books Placeholder */
-.books-placeholder {
-    text-align: center;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 3rem;
-    border: 1px solid rgba(255,255,255,0.1);
+.carousel-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.65s cubic-bezier(0.5, 0, 0, 1);
+}
+
+.carousel-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.carousel-slide img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
     border-radius: 10px;
-    background: rgba(255,255,255,0.02);
+    box-shadow: 0 30px 70px rgba(0,0,0,0.6);
+    transition: transform 0.4s ease;
 }
 
-.books-placeholder blockquote {
-    font-size: 1.5rem;
+.carousel-slide:hover img {
+    transform: scale(1.015);
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(10, 10, 10, 0.5);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 1.8rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+    z-index: 3;
+}
+
+.carousel-arrow:hover {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: #0a0a0a;
+    transform: translateY(-50%) scale(1.08);
+}
+
+.carousel-arrow.prev { left: 2.5vw; }
+.carousel-arrow.next { right: 2.5vw; }
+
+.fs-caption {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    margin-top: 0.8rem;
+    min-height: 3.5rem;
+}
+
+.fs-caption .cap-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
     font-style: italic;
-    margin-bottom: 2rem;
-    color: #ccc;
 }
 
-/* Scroll Animations */
+.fs-caption .cap-meta {
+    font-size: 0.85rem;
+    opacity: 0.65;
+    margin-top: 0.3rem;
+}
+
+.fs-caption .cap-rating {
+    color: var(--accent-color);
+    letter-spacing: 2px;
+    margin-top: 0.4rem;
+    font-size: 0.95rem;
+}
+
+.carousel-dots {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: 1.2rem;
+    flex-wrap: wrap;
+    max-width: 80vw;
+}
+
+.carousel-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    border: none;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.carousel-dot.active {
+    background: var(--accent-color);
+    transform: scale(1.3);
+}
+
+@media (max-width: 700px) {
+    .fs-frame { height: 60vh; }
+    .carousel-arrow { width: 38px; height: 38px; font-size: 1.4rem; }
+    .carousel-arrow.prev { left: 3vw; }
+    .carousel-arrow.next { right: 3vw; }
+}
+
+/* =========================================
+   FOOTER
+   ========================================= */
+.site-footer {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    opacity: 0.5;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.site-footer a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+.site-footer a:hover {
+    color: var(--accent-color);
+    opacity: 1;
+}
+
+/* =========================================
+   SCROLL REVEAL
+   ========================================= */
 .hidden-scroll {
     opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+    transform: translateY(40px) scale(0.96);
+    transition: opacity 0.9s cubic-bezier(0.5, 0, 0, 1), transform 0.9s cubic-bezier(0.5, 0, 0, 1);
 }
 
 .show-scroll {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
 }
+
 /* =========================================
    CURSOR PERSONALIZADO
    ========================================= */
@@ -299,331 +486,83 @@ a, button { cursor: none; }
 }
 
 /* =========================================
-   FILTROS DE LIBROS
+   LIGHTBOX
    ========================================= */
-.book-filters {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 3rem;
-}
-
-.filter-btn {
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.2);
-    color: var(--text-color);
-    padding: 0.6rem 1.4rem;
-    border-radius: 30px;
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
-}
-
-.filter-btn:hover {
-    border-color: var(--accent-color);
-    color: var(--accent-color);
-}
-
-.filter-btn.active {
-    background: var(--accent-color);
-    border-color: var(--accent-color);
-    color: #0a0a0a;
-    font-weight: 600;
-}
-
-/* =========================================
-   ESTANTE DE LIBROS
-   ========================================= */
-.book-shelf {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 2.5rem;
-    perspective: 1200px;
-}
-
-.book-card {
-    position: relative;
-    height: 280px;
-    border-radius: 4px 8px 8px 4px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 1.5rem 1rem;
-    box-shadow: -6px 8px 20px rgba(0,0,0,0.5), inset 6px 0 10px rgba(0,0,0,0.25);
-    transform-style: preserve-3d;
-    transition: transform 0.5s cubic-bezier(0.5,0,0,1), box-shadow 0.5s ease;
-    animation: fadeInBook 0.6s ease backwards;
-}
-
-.book-card::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 10px;
-    background: rgba(0,0,0,0.3);
-    border-radius: 4px 0 0 4px;
-}
-
-.book-card:hover {
-    transform: translateY(-10px) rotateY(-6deg);
-    box-shadow: -10px 16px 30px rgba(0,0,0,0.6);
-}
-
-.book-card .book-icon {
-    font-size: 2.2rem;
-    margin-bottom: 0.8rem;
-    opacity: 0.85;
-}
-
-.book-card h4 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.05rem;
-    line-height: 1.3;
-    margin-bottom: 0.4rem;
-}
-
-.book-card .book-author {
-    font-size: 0.75rem;
-    opacity: 0.75;
-    font-style: italic;
-}
-
-.book-card.filtered-out {
-    display: none;
-}
-
-@keyframes fadeInBook {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Paleta de portadas (se asigna por índice desde JS via clase book-hue-N) */
-.book-hue-1 { background: linear-gradient(160deg, #7a2e2e, #2c1010); }
-.book-hue-2 { background: linear-gradient(160deg, #2e4a3f, #10221a); }
-.book-hue-3 { background: linear-gradient(160deg, #2e3a7a, #101527); }
-.book-hue-4 { background: linear-gradient(160deg, #6a4a2e, #241a10); }
-.book-hue-5 { background: linear-gradient(160deg, #5a2e6a, #1e1027); }
-.book-hue-6 { background: linear-gradient(160deg, #2e6a63, #0f2320); }
-
-.books-hint {
-    text-align: center;
-    margin-top: 2.5rem;
-    opacity: 0.6;
-    font-style: italic;
-}
-
-/* =========================================
-   MODAL DE LIBRO ("abrir el libro")
-   ========================================= */
-.book-modal {
+.lightbox {
     position: fixed;
     inset: 0;
-    z-index: 2000;
+    z-index: 3000;
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 3rem 2rem;
 }
 
-.book-modal.open { display: flex; }
+.lightbox.open { display: flex; }
 
-.book-modal-backdrop {
+.lightbox-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(6px);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-.book-modal.open .book-modal-backdrop { opacity: 1; }
-
-.book-modal-content {
-    position: relative;
-    display: flex;
-    max-width: 700px;
-    width: 100%;
-    max-height: 85vh;
-    background: var(--card-bg);
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-    transform: perspective(1600px) rotateY(-90deg);
-    transform-origin: left center;
-    opacity: 0;
-    transition: transform 0.6s cubic-bezier(0.5,0,0,1), opacity 0.4s ease;
-}
-
-.book-modal.open .book-modal-content {
-    transform: perspective(1600px) rotateY(0deg);
-    opacity: 1;
-}
-
-.book-modal-cover {
-    flex: 0 0 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 4rem;
-}
-
-.book-modal-body {
-    padding: 2.5rem;
-    overflow-y: auto;
-}
-
-.book-modal-genre {
-    display: inline-block;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--accent-color);
-    border: 1px solid var(--accent-color);
-    padding: 0.2rem 0.7rem;
-    border-radius: 20px;
-    margin-bottom: 1rem;
-}
-
-.book-modal-body h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
-    margin-bottom: 0.3rem;
-}
-
-.book-modal-author {
-    opacity: 0.7;
-    font-style: italic;
-    margin-bottom: 1rem;
-}
-
-.book-modal-rating {
-    margin-bottom: 1.2rem;
-    letter-spacing: 3px;
-}
-
-.book-modal-review {
-    line-height: 1.7;
-    color: #ddd;
-}
-
-.book-modal-close {
-    position: absolute;
-    top: 1rem;
-    right: 1.2rem;
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 1.8rem;
-    z-index: 5;
-}
-
-@media (max-width: 600px) {
-    .book-modal-content { flex-direction: column; max-height: 90vh; }
-    .book-modal-cover { flex: 0 0 120px; }
-}
-
-/* =========================================
-   SECCIÓN INSTAGRAM
-   ========================================= */
-.instagram-subtitle {
-    text-align: center;
-    opacity: 0.7;
-    margin-top: -2rem;
-    margin-bottom: 3rem;
-}
-
-.instagram-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-}
-
-.ig-post {
-    position: relative;
-    aspect-ratio: 1 / 1;
-    border-radius: 6px;
-    overflow: hidden;
-    display: block;
-}
-
-.ig-post img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease, filter 0.5s ease;
-}
-
-.ig-post::after {
-    content: '♡ Ver en Instagram';
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,0.55);
-    color: #fff;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(8px);
     opacity: 0;
     transition: opacity 0.35s ease;
 }
 
-.ig-post:hover img {
-    transform: scale(1.08);
-    filter: brightness(0.7);
+.lightbox.open .lightbox-backdrop { opacity: 1; }
+
+.lightbox img {
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+    opacity: 0;
+    transform: scale(0.92);
+    transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
-.ig-post:hover::after {
+.lightbox.open img {
     opacity: 1;
+    transform: scale(1);
 }
 
-.ig-follow-btn {
-    display: block;
-    width: fit-content;
-    margin: 3rem auto 0;
-    padding: 0.9rem 2.2rem;
-    border: 1px solid var(--accent-color);
-    color: var(--accent-color);
-    text-decoration: none;
-    border-radius: 30px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    transition: all 0.3s ease;
+.lightbox-close {
+    position: fixed;
+    top: 1.5rem;
+    right: 2rem;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2.2rem;
+    z-index: 5;
 }
 
-.ig-follow-btn:hover {
-    background: var(--accent-color);
-    color: #0a0a0a;
-}
-
-/* Botón flotante */
+/* =========================================
+   BOTÓN FLOTANTE DE INSTAGRAM (discreto)
+   ========================================= */
 .ig-floating-btn {
     position: fixed;
     bottom: 2rem;
     right: 2rem;
-    width: 54px;
-    height: 54px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    background: var(--accent-color);
-    color: #0a0a0a;
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     font-style: italic;
     text-decoration: none;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    backdrop-filter: blur(6px);
     z-index: 1500;
     opacity: 0;
     transform: translateY(20px) scale(0.8);
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    transition: opacity 0.4s ease, transform 0.4s ease, background 0.3s ease, color 0.3s ease;
     pointer-events: none;
 }
 
@@ -634,6 +573,7 @@ a, button { cursor: none; }
 }
 
 .ig-floating-btn:hover {
+    background: var(--accent-color);
+    color: #0a0a0a;
     transform: scale(1.1);
 }
-

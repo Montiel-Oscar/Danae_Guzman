@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
             cursorDot.style.top = `${mouseY}px`;
         });
 
-        // El halo sigue con un pequeño retraso (lerp) para efecto "trail"
         function animateOutline() {
             outlineX += (mouseX - outlineX) * 0.15;
             outlineY += (mouseY - outlineY) * 0.15;
@@ -26,16 +25,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         animateOutline();
 
-        // Efecto "magnético" al pasar sobre elementos interactivos
-        const hoverables = document.querySelectorAll('a, button, .gallery-item, .book-card, .ig-post');
-        hoverables.forEach(el => {
-            el.addEventListener('mouseenter', () => cursorOutline.classList.add('hovering'));
-            el.addEventListener('mouseleave', () => cursorOutline.classList.remove('hovering'));
-        });
+        function bindHoverables() {
+            const hoverables = document.querySelectorAll('a, button, .carousel-slide, .selector-panel');
+            hoverables.forEach(el => {
+                el.addEventListener('mouseenter', () => cursorOutline.classList.add('hovering'));
+                el.addEventListener('mouseleave', () => cursorOutline.classList.remove('hovering'));
+            });
+        }
+        window.__bindHoverables = bindHoverables;
+        bindHoverables();
     }
 
     /* =========================================
-       1. Parallax en el Hero (reacciona al ratón)
+       1. Parallax en el Hero
        ========================================= */
     const heroContent = document.querySelector('.hero-content');
     document.addEventListener('mousemove', (e) => {
@@ -45,190 +47,246 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     /* =========================================
-       2. Efecto 3D Tilt en las imágenes de la galería
+       2. BARRA DE PROGRESO DE SCROLL
        ========================================= */
-    const cards = document.querySelectorAll('.tilt-card');
-    cards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = ((y - centerY) / centerY) * -10;
-            const rotateY = ((x - centerX) / centerX) * 10;
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-            card.style.transition = 'none';
-        });
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-            card.style.transition = 'transform 0.5s ease';
-        });
+    const progressBar = document.getElementById('scroll-progress');
+    function updateProgress() {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        if (progressBar) progressBar.style.width = `${pct}%`;
+    }
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+
+    /* =========================================
+       3. LIGHTBOX
+       ========================================= */
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxClose = document.getElementById('lightbox-close');
+    const lightboxBackdrop = document.getElementById('lightbox-backdrop');
+
+    function openLightbox(src, alt) {
+        lightboxImg.src = src;
+        lightboxImg.alt = alt || '';
+        lightbox.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+        lightbox.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+    if (lightboxBackdrop) lightboxBackdrop.addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLightbox();
     });
 
     /* =========================================
-       3. DATA DE LIBROS
-       Edita este arreglo para agregar/quitar reseñas.
-       icon: cualquier emoji que represente el libro
-       hue: número del 1 al 6 (paleta de portada, ver CSS .book-hue-N)
+       4. COMPONENTE CARRUSEL A PANTALLA COMPLETA
+       (con fondo difuminado en crossfade por slide)
+       ========================================= */
+    function createCarousel({ trackId, dotsId, prevId, nextId, captionId, bgAId, bgBId, items, basePath }) {
+        const track = document.getElementById(trackId);
+        const dotsWrap = document.getElementById(dotsId);
+        const prevBtn = document.getElementById(prevId);
+        const nextBtn = document.getElementById(nextId);
+        const caption = document.getElementById(captionId);
+        const bgA = document.getElementById(bgAId);
+        const bgB = document.getElementById(bgBId);
+        if (!track) return;
+
+        let current = 0;
+        let bgToggle = false; // alterna entre bgA y bgB para el crossfade
+
+        items.forEach((item) => {
+            const slide = document.createElement('div');
+            slide.className = 'carousel-slide';
+            const img = document.createElement('img');
+            img.src = basePath + item.file;
+            img.alt = item.title;
+            img.loading = 'lazy';
+            slide.appendChild(img);
+            slide.addEventListener('click', () => openLightbox(basePath + item.file, item.title));
+            track.appendChild(slide);
+
+            const dot = document.createElement('button');
+            dot.className = 'carousel-dot';
+            dotsWrap.appendChild(dot);
+        });
+
+        const dots = dotsWrap.querySelectorAll('.carousel-dot');
+
+        function starsFor(rating) {
+            if (!rating) return '';
+            return '★'.repeat(rating) + '☆'.repeat(5 - rating);
+        }
+
+        function updateBackground(url) {
+            if (!bgA || !bgB) return;
+            const showEl = bgToggle ? bgB : bgA;
+            const hideEl = bgToggle ? bgA : bgB;
+            showEl.style.backgroundImage = `url('${url}')`;
+            showEl.classList.add('active');
+            hideEl.classList.remove('active');
+            bgToggle = !bgToggle;
+        }
+
+        function render() {
+            track.style.transform = `translateX(-${current * 100}%)`;
+            dots.forEach((d, i) => d.classList.toggle('active', i === current));
+            const item = items[current];
+            let html = `<div class="cap-title">${item.title}</div>`;
+            if (item.author) html += `<div class="cap-meta">${item.author}</div>`;
+            if (item.rating) html += `<div class="cap-rating">${starsFor(item.rating)}</div>`;
+            caption.innerHTML = html;
+            updateBackground(basePath + item.file);
+        }
+
+        function goTo(i) {
+            current = (i + items.length) % items.length;
+            render();
+        }
+
+        dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
+        if (prevBtn) prevBtn.addEventListener('click', () => goTo(current - 1));
+        if (nextBtn) nextBtn.addEventListener('click', () => goTo(current + 1));
+
+        // Swipe táctil
+        let touchStartX = 0;
+        const viewport = track.parentElement;
+        viewport.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+        viewport.addEventListener('touchend', (e) => {
+            const diff = e.changedTouches[0].clientX - touchStartX;
+            if (Math.abs(diff) > 40) {
+                goTo(current + (diff < 0 ? 1 : -1));
+            }
+        });
+
+        // Flechas del teclado, solo cuando la sección está en pantalla
+        const section = track.closest('section');
+        document.addEventListener('keydown', (e) => {
+            if (!section) return;
+            const rect = section.getBoundingClientRect();
+            const isVisible = rect.top < window.innerHeight * 0.5 && rect.bottom > window.innerHeight * 0.5;
+            if (!isVisible) return;
+            if (e.key === 'ArrowRight') goTo(current + 1);
+            if (e.key === 'ArrowLeft') goTo(current - 1);
+        });
+
+        render();
+    }
+
+    /* =========================================
+       5. DATA: LIBROS
        ========================================= */
     const books = [
         {
-            title: "Cien Años de Soledad",
-            author: "Gabriel García Márquez",
-            genre: "Clásico",
-            rating: 5,
-            icon: "📖",
-            hue: 1,
-            review: "Un viaje generacional que se siente tan vívido como un sueño recurrente. Cada relectura revela algo nuevo sobre Macondo y sobre nosotros mismos."
+            file: 'reseña-cuando-no-queden-mas-estrellas.jpeg',
+            title: 'Cuando no queden más estrellas que contar',
+            author: 'María Martínez',
+            rating: 5
         },
         {
-            title: "Rayuela",
-            author: "Julio Cortázar",
-            genre: "Ficción",
-            rating: 4,
-            icon: "🌀",
-            hue: 2,
-            review: "Una estructura que reta al lector a construir su propio camino. No es una lectura cómoda, pero es de las que se quedan pegadas a la piel."
+            file: 'reseña-a-little-life-bookidish.jpeg',
+            title: 'A Little Life',
+            author: 'Hanya Yanagihara',
+            rating: 5
         },
         {
-            title: "Veinte Poemas de Amor",
-            author: "Pablo Neruda",
-            genre: "Poesía",
-            rating: 5,
-            icon: "🕊️",
-            hue: 3,
-            review: "Cada verso parece escrito para ilustrarse. La melancolía y la ternura conviven en cada página de una forma casi pictórica."
+            file: 'reseña-a-little-life-sinfrase.jpeg',
+            title: 'The Secret History',
+            author: 'Donna Tartt',
+            rating: 5
         },
         {
-            title: "Sapiens",
-            author: "Yuval Noah Harari",
-            genre: "No ficción",
-            rating: 4,
-            icon: "🧠",
-            hue: 4,
-            review: "Una manera de mirar la historia humana en gran angular. Cambia por completo la perspectiva de por qué creemos en las cosas que creemos."
+            file: 'reseña-once-upon-a-broken-heart.jpeg',
+            title: 'Once Upon a Broken Heart',
+            author: 'Stephanie Garber',
+            rating: 5
         },
         {
-            title: "El Aleph",
-            author: "Jorge Luis Borges",
-            genre: "Clásico",
-            rating: 5,
-            icon: "♾️",
-            hue: 5,
-            review: "Cada cuento es un laberinto en miniatura. Borges logra que lo infinito quepa en apenas unas páginas."
+            file: 'reseña-the-ballad-of-never-after.jpeg',
+            title: 'The Ballad of Never After',
+            author: 'Stephanie Garber',
+            rating: 5
         },
         {
-            title: "Persépolis",
-            author: "Marjane Satrapi",
-            genre: "No ficción",
-            rating: 4,
-            icon: "🎨",
-            hue: 6,
-            review: "La combinación de ilustración y memoria histórica es justo el tipo de narrativa visual que más me inspira como artista."
+            file: 'reseña-a-curse-for-true-love.jpeg',
+            title: 'A Curse for True Love',
+            author: 'Stephanie Garber',
+            rating: 4
+        },
+        {
+            file: 'libros-must-read-recomendados.jpeg',
+            title: 'Libros que son un Must Read',
+            author: 'Recomendaciones',
+            rating: null
         }
     ];
 
-    const shelf = document.getElementById('book-shelf');
-    const modal = document.getElementById('book-modal');
-    const modalCover = document.getElementById('modal-cover');
-    const modalGenre = document.getElementById('modal-genre');
-    const modalTitle = document.getElementById('modal-title');
-    const modalAuthor = document.getElementById('modal-author');
-    const modalRating = document.getElementById('modal-rating');
-    const modalReview = document.getElementById('modal-review');
-    const modalClose = document.getElementById('book-modal-close');
-    const modalBackdrop = document.getElementById('book-modal-backdrop');
-
-    function starsFor(rating) {
-        return '🪶'.repeat(rating) + '<span style="opacity:.25">' + '🪶'.repeat(5 - rating) + '</span>';
-    }
-
-    function openModal(book) {
-        modalCover.className = `book-modal-cover book-hue-${book.hue}`;
-        modalCover.textContent = book.icon;
-        modalGenre.textContent = book.genre;
-        modalTitle.textContent = book.title;
-        modalAuthor.textContent = book.author;
-        modalRating.innerHTML = starsFor(book.rating);
-        modalReview.textContent = book.review;
-        modal.classList.add('open');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-        modal.classList.remove('open');
-        document.body.style.overflow = '';
-    }
-
-    if (shelf) {
-        books.forEach((book, i) => {
-            const card = document.createElement('div');
-            card.className = `book-card book-hue-${book.hue}`;
-            card.dataset.genre = book.genre;
-            card.style.animationDelay = `${i * 0.08}s`;
-            card.innerHTML = `
-                <div class="book-icon">${book.icon}</div>
-                <h4>${book.title}</h4>
-                <p class="book-author">${book.author}</p>
-            `;
-            card.addEventListener('click', () => openModal(book));
-            shelf.appendChild(card);
-        });
-    }
-
-    if (modalClose) modalClose.addEventListener('click', closeModal);
-    if (modalBackdrop) modalBackdrop.addEventListener('click', closeModal);
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeModal();
+    createCarousel({
+        trackId: 'libros-track',
+        dotsId: 'libros-dots',
+        prevId: 'libros-prev',
+        nextId: 'libros-next',
+        captionId: 'libros-caption',
+        bgAId: 'libros-bg-a',
+        bgBId: 'libros-bg-b',
+        items: books,
+        basePath: 'assets/libros/'
     });
 
     /* =========================================
-       4. FILTROS DE GÉNERO
+       6. DATA: ARTE
        ========================================= */
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const filter = btn.dataset.filter;
-            document.querySelectorAll('.book-card').forEach(card => {
-                const matches = filter === 'todos' || card.dataset.genre === filter;
-                card.classList.toggle('filtered-out', !matches);
-            });
-        });
-    });
-
-    /* =========================================
-       5. GRID DE INSTAGRAM
-       Reutiliza las imágenes de arte que ya existen.
-       Cambia el "href" de cada post por el link real
-       a la publicación de Instagram cuando lo tengas.
-       ========================================= */
-    const igPosts = [
-        { img: 'assets/arte/dragon.webp', href: 'https://instagram.com/' },
-        { img: 'assets/arte/caballero.webp', href: 'https://instagram.com/' },
-        { img: 'assets/arte/flores.webp', href: 'https://instagram.com/' },
-        { img: 'assets/arte/barco.webp', href: 'https://instagram.com/' },
-        { img: 'assets/arte/paisaje.webp', href: 'https://instagram.com/' },
-        { img: 'assets/arte/piano.webp', href: 'https://instagram.com/' }
+    const artworks = [
+        {
+            file: 'bodegon-de-cristal-2023.png',
+            title: 'Swan off white & Bodegón de cristal',
+            author: '2023 – 2026'
+        },
+        {
+            file: 'collage-moonlight-boat-floral.jpeg',
+            title: 'Moonlight view, Boat under the moon & Naturaleza muerta n.º1',
+            author: '2025 – 2026'
+        },
+        {
+            file: 'collage-flamenco-palace.jpeg',
+            title: 'Flamenco style & Palace of Fine Arts',
+            author: '2023'
+        },
+        {
+            file: 'collage-out-of-a-book-soldier.jpeg',
+            title: "Out of a Book & Soldier's Weight",
+            author: '2025'
+        },
+        {
+            file: 'collage-todays-news-lirios-teclado.jpeg',
+            title: "Today's News, Lirios & Teclado",
+            author: '2025'
+        }
     ];
 
-    const igGrid = document.getElementById('instagram-grid');
-    if (igGrid) {
-        igPosts.forEach(post => {
-            const a = document.createElement('a');
-            a.className = 'ig-post';
-            a.href = post.href;
-            a.target = '_blank';
-            a.rel = 'noopener';
-            a.innerHTML = `<img src="${post.img}" alt="Publicación de Instagram">`;
-            igGrid.appendChild(a);
-        });
-    }
+    createCarousel({
+        trackId: 'arte-track',
+        dotsId: 'arte-dots',
+        prevId: 'arte-prev',
+        nextId: 'arte-next',
+        captionId: 'arte-caption',
+        bgAId: 'arte-bg-a',
+        bgBId: 'arte-bg-b',
+        items: artworks,
+        basePath: 'assets/arte/'
+    });
+
+    if (window.__bindHoverables) window.__bindHoverables();
 
     /* =========================================
-       6. BOTÓN FLOTANTE DE INSTAGRAM
+       7. BOTÓN FLOTANTE DE INSTAGRAM
        Aparece después de salir del hero
        ========================================= */
     const floatingBtn = document.getElementById('ig-floating-btn');
@@ -243,7 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* =========================================
-       7. Animaciones al hacer Scroll (Aparición suave)
+       8. Animaciones al hacer Scroll
        ========================================= */
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -251,11 +309,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 entry.target.classList.add('show-scroll');
             }
         });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.15 });
 
-    const elementsToAnimate = document.querySelectorAll(
-        '.gallery-item, .section-title, .books-hint, .instagram-subtitle, .ig-follow-btn'
-    );
+    const elementsToAnimate = document.querySelectorAll('.fs-frame, .fs-caption, .carousel-dots, .fs-section-label');
     elementsToAnimate.forEach(el => {
         el.classList.add('hidden-scroll');
         observer.observe(el);

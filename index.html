@@ -4,125 +4,107 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danae Guzmán | Arte & Reseñas</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="apple-touch-icon" href="assets/favicon.png">
+    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Cursor personalizado: punto + halo con retraso (trail tipo tinta) -->
+    <!-- Cursor personalizado -->
     <div id="cursor-dot"></div>
     <div id="cursor-outline"></div>
+
+    <!-- Barra de progreso de scroll -->
+    <div class="scroll-progress" id="scroll-progress"></div>
 
     <nav id="navbar">
         <div class="logo">Danae Guzmán</div>
         <ul class="nav-links">
-            <li><a href="#galeria">Arte</a></li>
+            <li><a href="#arte">Arte</a></li>
             <li><a href="#libros">Libros</a></li>
-            <li><a href="#instagram">Instagram</a></li>
+            <li><a href="https://www.instagram.com/book.ish_db/" target="_blank" rel="noopener" class="nav-ig">@book.ish_db</a></li>
         </ul>
     </nav>
 
     <header class="hero" id="hero">
-        <!-- El video de fondo con IA -->
         <video autoplay loop muted playsinline class="hero-video">
-            <source src="assets/video/dragon-loop.mp4" type="video/mp4">
+            <source src="assets/video/dragon-loop2.mp4" type="video/mp4">
         </video>
-
-        <!-- Capa oscura para que el texto resalte -->
         <div class="hero-overlay"></div>
 
         <div class="hero-content">
             <h1 id="hero-title">Lienzos & Letras</h1>
             <p>Explorando mundos a través del pincel y la palabra.</p>
         </div>
-        <div class="scroll-indicator">↓</div>
+
+        <!-- Selector de sección -->
+        <div class="hero-selector">
+            <a href="#arte" class="selector-panel" id="panel-arte">
+                <img src="assets/arte/collage-flamenco-palace.jpeg" alt="" class="selector-bg">
+                <div class="selector-scrim"></div>
+                <div class="selector-label">
+                    <span class="selector-kicker">Explorar</span>
+                    <span class="selector-title">Arte</span>
+                </div>
+            </a>
+            <a href="#libros" class="selector-panel" id="panel-libros">
+                <img src="assets/libros/reseña-once-upon-a-broken-heart.jpeg" alt="" class="selector-bg">
+                <div class="selector-scrim"></div>
+                <div class="selector-label">
+                    <span class="selector-kicker">Descubrir</span>
+                    <span class="selector-title">Libros</span>
+                </div>
+            </a>
+        </div>
     </header>
 
     <main>
-        <section id="galeria" class="gallery-section">
-            <h2 class="section-title">Obras Recientes</h2>
-            <div class="gallery-grid">
-                <!-- Tarjetas con efecto 3D tilt -->
-                <div class="gallery-item tilt-card">
-                    <img src="assets/arte/barco.webp" alt="Barco">
-                    <div class="overlay"><span>Barco</span></div>
-                </div>
-                <div class="gallery-item tilt-card">
-                    <img src="assets/arte/caballero.webp" alt="Caballero">
-                    <div class="overlay"><span>Caballero</span></div>
-                </div>
-                <div class="gallery-item tilt-card">
-                    <img src="assets/arte/dragon.webp" alt="Dragón">
-                    <div class="overlay"><span>Dragón</span></div>
-                </div>
-                <div class="gallery-item tilt-card">
-                    <img src="assets/arte/flores.webp" alt="Flores">
-                    <div class="overlay"><span>Flores</span></div>
-                </div>
-                <div class="gallery-item tilt-card">
-                    <img src="assets/arte/paisaje.webp" alt="Paisaje">
-                    <div class="overlay"><span>Paisaje</span></div>
-                </div>
-                <div class="gallery-item tilt-card">
-                    <img src="assets/arte/piano.webp" alt="Piano">
-                    <div class="overlay"><span>Piano</span></div>
-                </div>
+        <!-- ================= ARTE: pantalla completa ================= -->
+        <section id="arte" class="fullscreen-carousel">
+            <div class="fs-bg" id="arte-bg-a"></div>
+            <div class="fs-bg" id="arte-bg-b"></div>
+            <span class="fs-section-label">Arte</span>
+            <button class="carousel-arrow prev" id="arte-prev" aria-label="Anterior">‹</button>
+            <button class="carousel-arrow next" id="arte-next" aria-label="Siguiente">›</button>
+            <div class="fs-frame">
+                <div class="carousel-track" id="arte-track"></div>
             </div>
+            <div class="fs-caption" id="arte-caption"></div>
+            <div class="carousel-dots" id="arte-dots"></div>
         </section>
 
-        <section id="libros" class="books-section">
-            <h2 class="section-title">Reseñas Literarias</h2>
-
-            <!-- Filtros por género -->
-            <div class="book-filters">
-                <button class="filter-btn active" data-filter="todos">Todos</button>
-                <button class="filter-btn" data-filter="Ficción">Ficción</button>
-                <button class="filter-btn" data-filter="Poesía">Poesía</button>
-                <button class="filter-btn" data-filter="No ficción">No ficción</button>
-                <button class="filter-btn" data-filter="Clásico">Clásicos</button>
+        <!-- ================= LIBROS: pantalla completa ================= -->
+        <section id="libros" class="fullscreen-carousel">
+            <div class="fs-bg" id="libros-bg-a"></div>
+            <div class="fs-bg" id="libros-bg-b"></div>
+            <span class="fs-section-label">Libros</span>
+            <button class="carousel-arrow prev" id="libros-prev" aria-label="Anterior">‹</button>
+            <button class="carousel-arrow next" id="libros-next" aria-label="Siguiente">›</button>
+            <div class="fs-frame">
+                <div class="carousel-track" id="libros-track"></div>
             </div>
-
-            <!-- El estante se genera dinámicamente desde script.js (array "books") -->
-            <div class="book-shelf" id="book-shelf"></div>
-
-            <p class="books-hint hidden-scroll">Toca un libro para abrirlo ✨</p>
-        </section>
-
-        <section id="instagram" class="instagram-section">
-            <h2 class="section-title">En Instagram</h2>
-            <p class="instagram-subtitle hidden-scroll">Proceso, bocetos y arte terminado — todos los días.</p>
-
-            <div class="instagram-grid" id="instagram-grid"></div>
-
-            <a href="https://www.instagram.com/book.ish_db/" target="_blank" rel="noopener" class="ig-follow-btn hidden-scroll">
-                Seguir en Instagram
-            </a>
+            <div class="fs-caption" id="libros-caption"></div>
+            <div class="carousel-dots" id="libros-dots"></div>
         </section>
     </main>
 
-    <!-- Modal para "abrir" el libro seleccionado -->
-    <div class="book-modal" id="book-modal">
-        <div class="book-modal-backdrop" id="book-modal-backdrop"></div>
-        <div class="book-modal-content">
-            <button class="book-modal-close" id="book-modal-close">&times;</button>
-            <div class="book-modal-cover" id="modal-cover"></div>
-            <div class="book-modal-body">
-                <span class="book-modal-genre" id="modal-genre"></span>
-                <h3 id="modal-title"></h3>
-                <p class="book-modal-author" id="modal-author"></p>
-                <div class="book-modal-rating" id="modal-rating"></div>
-                <p class="book-modal-review" id="modal-review"></p>
-            </div>
-        </div>
+    <footer class="site-footer">
+        <a href="https://www.instagram.com/book.ish_db/" target="_blank" rel="noopener">@book.ish_db en Instagram</a>
+    </footer>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
+        <button class="lightbox-close" id="lightbox-close">&times;</button>
+        <img src="" alt="" id="lightbox-img">
     </div>
 
-    <!-- Botón flotante de Instagram -->
+    <!-- Botón flotante de Instagram (discreto) -->
     <a href="https://www.instagram.com/book.ish_db/" target="_blank" rel="noopener" class="ig-floating-btn" id="ig-floating-btn" aria-label="Síguenos en Instagram">
         <span>@</span>
     </a>
 
     <script src="script.js"></script>
-    
 </body>
 </html>
