@@ -301,6 +301,9 @@ nav {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    /* Parallax se aplica via variables JS */
+    transform: translate(var(--px, 0px), var(--py, 0px));
+    transition: transform 0.15s ease-out;
 }
 
 .carousel-slide img {
@@ -315,7 +318,12 @@ nav {
 }
 
 .carousel-slide:hover img {
-    transform: scale(1.015);
+    transform: scale(1.02);
+}
+
+/* Ajuste para que el hover scale no pelee con el parallax */
+.carousel-slide:hover {
+    /* el transform lo controla JS, pero el hover se aplica a la img */;
 }
 
 .carousel-arrow {
@@ -369,10 +377,37 @@ nav {
 }
 
 .fs-caption .cap-rating {
-    color: var(--accent-color);
-    letter-spacing: 2px;
+    display: flex;
+    justify-content: center;
+    gap: 0.4rem;
     margin-top: 0.4rem;
-    font-size: 0.95rem;
+    font-size: 1.4rem;
+}
+
+/* =========================================
+   ESTRELLAS CON GLOW Y PULSACIÓN SINCRONIZADA
+   ========================================= */
+.cap-rating .star {
+    display: inline-block;
+    color: var(--accent-color);
+    text-shadow: 0 0 8px var(--accent-color), 0 0 20px var(--accent-color);
+    animation: starPulse 2.4s ease-in-out infinite;
+    /* Sin retraso para que todas vayan al unísono */
+}
+
+@keyframes starPulse {
+    0% {
+        transform: scale(1);
+        text-shadow: 0 0 6px var(--accent-color), 0 0 18px var(--accent-color);
+    }
+    50% {
+        transform: scale(1.4);
+        text-shadow: 0 0 18px var(--accent-color), 0 0 45px var(--accent-color), 0 0 70px rgba(212, 175, 55, 0.4);
+    }
+    100% {
+        transform: scale(1);
+        text-shadow: 0 0 6px var(--accent-color), 0 0 18px var(--accent-color);
+    }
 }
 
 .carousel-dots {

@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* =========================================
        4. COMPONENTE CARRUSEL A PANTALLA COMPLETA
-       (con fondo difuminado en crossfade por slide)
+       (con fondo difuminado en crossfade por slide + Parallax)
        ========================================= */
     function createCarousel({ trackId, dotsId, prevId, nextId, captionId, bgAId, bgBId, items, basePath }) {
         const track = document.getElementById(trackId);
@@ -95,10 +95,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const caption = document.getElementById(captionId);
         const bgA = document.getElementById(bgAId);
         const bgB = document.getElementById(bgBId);
-        if (!track) return;
+        const section = track ? track.closest('.fullscreen-carousel') : null;
+        if (!track || !section) return;
 
         let current = 0;
-        let bgToggle = false; // alterna entre bgA y bgB para el crossfade
+        let bgToggle = false;
 
         items.forEach((item) => {
             const slide = document.createElement('div');
@@ -120,7 +121,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         function starsFor(rating) {
             if (!rating) return '';
-            return '★'.repeat(rating) + '☆'.repeat(5 - rating);
+            let html = '';
+            for (let i = 1; i <= 5; i++) {
+                const filled = i <= rating ? '★' : '☆';
+                html += `<span class="star">${filled}</span>`;
+            }
+            return html;
         }
 
         function updateBackground(url) {
@@ -166,10 +172,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Flechas del teclado, solo cuando la sección está en pantalla
-        const section = track.closest('section');
+        // Flechas del teclado
         document.addEventListener('keydown', (e) => {
-            if (!section) return;
             const rect = section.getBoundingClientRect();
             const isVisible = rect.top < window.innerHeight * 0.5 && rect.bottom > window.innerHeight * 0.5;
             if (!isVisible) return;
@@ -178,12 +182,68 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         render();
+
+        /* =========================================
+           PARALLAX EN EL CARRUSEL (movimiento del ratón)
+           ========================================= */
+        let targetPX = 0, targetPY = 0;
+        let currentPX = 0, currentPY = 0;
+        let paraAnimating = false;
+
+        function animateParallax() {
+            currentPX += (targetPX - currentPX) * 0.12;
+            currentPY += (targetPY - currentPY) * 0.12;
+            const slides = track.querySelectorAll('.carousel-slide');
+            slides.forEach(slide => {
+                slide.style.setProperty('--px', currentPX + 'px');
+                slide.style.setProperty('--py', currentPY + 'px');
+            });
+            if (Math.abs(targetPX - currentPX) > 0.05 || Math.abs(targetPY - currentPY) > 0.05) {
+                requestAnimationFrame(animateParallax);
+            } else {
+                paraAnimating = false;
+                // Asegurar que llegue exacto
+                slides.forEach(slide => {
+                    slide.style.setProperty('--px', targetPX + 'px');
+                    slide.style.setProperty('--py', targetPY + 'px');
+                });
+            }
+        }
+
+        function startParallaxAnimation() {
+            if (!paraAnimating) {
+                paraAnimating = true;
+                requestAnimationFrame(animateParallax);
+            }
+        }
+
+        section.addEventListener('mousemove', (e) => {
+            const rect = section.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const maxMove = 22; // Máximo desplazamiento en píxeles
+            targetPX = ((e.clientX - centerX) / rect.width) * maxMove * 2;
+            targetPY = ((e.clientY - centerY) / rect.height) * maxMove * 2;
+            startParallaxAnimation();
+        });
+
+        section.addEventListener('mouseleave', () => {
+            targetPX = 0;
+            targetPY = 0;
+            startParallaxAnimation();
+        });
     }
 
     /* =========================================
-       5. DATA: LIBROS
+       5. DATA: LIBROS (Must Read primero)
        ========================================= */
     const books = [
+        {
+            file: 'libros-must-read-recomendados.jpeg',
+            title: 'Libros que son un Must Read',
+            author: 'Recomendaciones',
+            rating: null
+        },
         {
             file: 'reseña-cuando-no-queden-mas-estrellas.jpeg',
             title: 'Cuando no queden más estrellas que contar',
@@ -219,12 +279,6 @@ document.addEventListener("DOMContentLoaded", () => {
             title: 'A Curse for True Love',
             author: 'Stephanie Garber',
             rating: 4
-        },
-        {
-            file: 'libros-must-read-recomendados.jpeg',
-            title: 'Libros que son un Must Read',
-            author: 'Recomendaciones',
-            rating: null
         }
     ];
 
@@ -287,7 +341,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* =========================================
        7. BOTÓN FLOTANTE DE INSTAGRAM
-       Aparece después de salir del hero
        ========================================= */
     const floatingBtn = document.getElementById('ig-floating-btn');
     const heroEl = document.getElementById('hero');
