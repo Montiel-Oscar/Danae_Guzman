@@ -37,14 +37,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* =========================================
-       1. Parallax en el Hero
+       1. Parallax en el Hero (solo para mouse)
        ========================================= */
     const heroContent = document.querySelector('.hero-content');
-    document.addEventListener('mousemove', (e) => {
-        const x = (window.innerWidth / 2 - e.pageX) / 40;
-        const y = (window.innerHeight / 2 - e.pageY) / 40;
-        if (heroContent) heroContent.style.transform = `translate(${x}px, ${y}px)`;
-    });
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+    if (!isTouchDevice && heroContent) {
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth / 2 - e.pageX) / 40;
+            const y = (window.innerHeight / 2 - e.pageY) / 40;
+            heroContent.style.transform = `translate(${x}px, ${y}px)`;
+        });
+    }
 
     /* =========================================
        2. BARRA DE PROGRESO DE SCROLL
@@ -84,8 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     /* =========================================
-       4. COMPONENTE CARRUSEL A PANTALLA COMPLETA
-       (con fondo difuminado en crossfade por slide + Parallax)
+       4. COMPONENTE CARRUSEL + PARALLAX
        ========================================= */
     function createCarousel({ trackId, dotsId, prevId, nextId, captionId, bgAId, bgBId, items, basePath }) {
         const track = document.getElementById(trackId);
@@ -159,7 +162,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (prevBtn) prevBtn.addEventListener('click', () => goTo(current - 1));
         if (nextBtn) nextBtn.addEventListener('click', () => goTo(current + 1));
 
-        // Swipe táctil
         let touchStartX = 0;
         const viewport = track.parentElement;
         viewport.addEventListener('touchstart', (e) => {
@@ -172,7 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Flechas del teclado
         document.addEventListener('keydown', (e) => {
             const rect = section.getBoundingClientRect();
             const isVisible = rect.top < window.innerHeight * 0.5 && rect.bottom > window.innerHeight * 0.5;
@@ -184,58 +185,60 @@ document.addEventListener("DOMContentLoaded", () => {
         render();
 
         /* =========================================
-           PARALLAX EN EL CARRUSEL (movimiento del ratón)
+           PARALLAX EN EL CARRUSEL (SOLO SI NO ES TÁCTIL)
            ========================================= */
-        let targetPX = 0, targetPY = 0;
-        let currentPX = 0, currentPY = 0;
-        let paraAnimating = false;
+        const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        if (!isTouch) {
+            let targetPX = 0, targetPY = 0;
+            let currentPX = 0, currentPY = 0;
+            let paraAnimating = false;
 
-        function animateParallax() {
-            currentPX += (targetPX - currentPX) * 0.12;
-            currentPY += (targetPY - currentPY) * 0.12;
-            const slides = track.querySelectorAll('.carousel-slide');
-            slides.forEach(slide => {
-                slide.style.setProperty('--px', currentPX + 'px');
-                slide.style.setProperty('--py', currentPY + 'px');
-            });
-            if (Math.abs(targetPX - currentPX) > 0.05 || Math.abs(targetPY - currentPY) > 0.05) {
-                requestAnimationFrame(animateParallax);
-            } else {
-                paraAnimating = false;
-                // Asegurar que llegue exacto
+            function animateParallax() {
+                currentPX += (targetPX - currentPX) * 0.12;
+                currentPY += (targetPY - currentPY) * 0.12;
+                const slides = track.querySelectorAll('.carousel-slide');
                 slides.forEach(slide => {
-                    slide.style.setProperty('--px', targetPX + 'px');
-                    slide.style.setProperty('--py', targetPY + 'px');
+                    slide.style.setProperty('--px', currentPX + 'px');
+                    slide.style.setProperty('--py', currentPY + 'px');
                 });
+                if (Math.abs(targetPX - currentPX) > 0.05 || Math.abs(targetPY - currentPY) > 0.05) {
+                    requestAnimationFrame(animateParallax);
+                } else {
+                    paraAnimating = false;
+                    slides.forEach(slide => {
+                        slide.style.setProperty('--px', targetPX + 'px');
+                        slide.style.setProperty('--py', targetPY + 'px');
+                    });
+                }
             }
-        }
 
-        function startParallaxAnimation() {
-            if (!paraAnimating) {
-                paraAnimating = true;
-                requestAnimationFrame(animateParallax);
+            function startParallaxAnimation() {
+                if (!paraAnimating) {
+                    paraAnimating = true;
+                    requestAnimationFrame(animateParallax);
+                }
             }
+
+            section.addEventListener('mousemove', (e) => {
+                const rect = section.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const maxMove = 22;
+                targetPX = ((e.clientX - centerX) / rect.width) * maxMove * 2;
+                targetPY = ((e.clientY - centerY) / rect.height) * maxMove * 2;
+                startParallaxAnimation();
+            });
+
+            section.addEventListener('mouseleave', () => {
+                targetPX = 0;
+                targetPY = 0;
+                startParallaxAnimation();
+            });
         }
-
-        section.addEventListener('mousemove', (e) => {
-            const rect = section.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            const maxMove = 22; // Máximo desplazamiento en píxeles
-            targetPX = ((e.clientX - centerX) / rect.width) * maxMove * 2;
-            targetPY = ((e.clientY - centerY) / rect.height) * maxMove * 2;
-            startParallaxAnimation();
-        });
-
-        section.addEventListener('mouseleave', () => {
-            targetPX = 0;
-            targetPY = 0;
-            startParallaxAnimation();
-        });
     }
 
     /* =========================================
-       5. DATA: LIBROS (Must Read primero)
+       5. DATA: LIBROS
        ========================================= */
     const books = [
         {
@@ -369,4 +372,87 @@ document.addEventListener("DOMContentLoaded", () => {
         el.classList.add('hidden-scroll');
         observer.observe(el);
     });
+
+    /* =========================================
+       9. PARTÍCULAS FLOTANTES EN EL HERO (NUEVO)
+       ========================================= */
+    const canvas = document.getElementById('particles-canvas');
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            width = rect.width;
+            height = rect.height;
+            canvas.width = width;
+            canvas.height = height;
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor() { this.reset(); }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2.8 + 0.8;
+                this.speedX = (Math.random() - 0.5) * 0.2;
+                this.speedY = Math.random() * 0.4 + 0.15; // Flota hacia arriba
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y -= this.speedY;
+                // Rebote suave o reset
+                if (this.y < -10) {
+                    this.reset();
+                    this.y = height + 10;
+                }
+                if (this.x < -10) this.x = width + 10;
+                if (this.x > width + 10) this.x = -10;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                // Color dorado con glow
+                const gradient = ctx.createRadialGradient(
+                    this.x, this.y, 0,
+                    this.x, this.y, this.size * 3
+                );
+                gradient.addColorStop(0, `rgba(212, 175, 55, ${this.opacity * 1.2})`);
+                gradient.addColorStop(1, `rgba(212, 175, 55, 0)`);
+                ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`;
+                ctx.fill();
+
+                // Resplandor extra
+                ctx.shadowColor = `rgba(212, 175, 55, ${this.opacity * 0.6})`;
+                ctx.shadowBlur = 15;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        // Crear partículas (cantidad adaptativa según resolución)
+        const count = Math.min(120, Math.floor((width * height) / 8000));
+        for (let i = 0; i < count; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        animateParticles();
+    }
 });

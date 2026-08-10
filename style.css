@@ -1,7 +1,7 @@
 :root {
     --bg-color: #0a0a0a;
     --text-color: #f4f4f5;
-    --accent-color: #d4af37; /* Tono dorado elegante */
+    --accent-color: #d4af37;
     --card-bg: #18181b;
 }
 
@@ -42,13 +42,13 @@ h1, h2, h3, .logo {
 }
 
 /* =========================================
-   NAVBAR
+   NAVBAR FLUIDA
    ========================================= */
 nav {
     position: fixed;
     top: 0;
     width: 100%;
-    padding: 1.5rem 3rem;
+    padding: clamp(0.6rem, 2vw, 1.5rem) clamp(1rem, 4vw, 3rem);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -59,7 +59,7 @@ nav {
 }
 
 .logo {
-    font-size: 1.5rem;
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
     font-style: italic;
     letter-spacing: 1px;
 }
@@ -68,13 +68,13 @@ nav {
     list-style: none;
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: clamp(0.8rem, 2.5vw, 2rem);
 }
 
 .nav-links a {
     color: var(--text-color);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: clamp(0.7rem, 1.2vw, 0.9rem);
     text-transform: uppercase;
     letter-spacing: 2px;
     transition: color 0.3s ease;
@@ -86,12 +86,12 @@ nav {
 
 .nav-links .nav-ig {
     opacity: 0.55;
-    font-size: 0.75rem;
+    font-size: clamp(0.6rem, 1vw, 0.75rem);
     letter-spacing: 1px;
     text-transform: none;
     font-style: italic;
     border-left: 1px solid rgba(255,255,255,0.2);
-    padding-left: 1.6rem;
+    padding-left: clamp(0.8rem, 2vw, 1.6rem);
 }
 
 .nav-links .nav-ig:hover {
@@ -103,6 +103,7 @@ nav {
    ========================================= */
 .hero {
     height: 100vh;
+    height: 100dvh; /* Para móviles modernos */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -136,14 +137,20 @@ nav {
 .hero-content {
     z-index: 2;
     transition: transform 0.1s ease-out;
+    padding: 0 1.5rem;
 }
 
 #hero-title {
-    font-size: 5rem;
+    font-size: clamp(2.8rem, 12vw, 5rem);
     margin-bottom: 1rem;
     background: linear-gradient(45deg, #fff, #888);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+.hero-content p {
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    opacity: 0.8;
 }
 
 /* Selector de sección */
@@ -151,15 +158,15 @@ nav {
     position: relative;
     z-index: 2;
     display: flex;
-    gap: 1.5rem;
-    margin-top: 3rem;
-    width: min(680px, 88vw);
+    gap: clamp(1rem, 2vw, 1.5rem);
+    margin-top: clamp(2rem, 5vh, 3rem);
+    width: min(680px, 92vw);
 }
 
 .selector-panel {
     position: relative;
     flex: 1;
-    height: 190px;
+    height: clamp(120px, 25vh, 190px);
     border-radius: 12px;
     overflow: hidden;
     text-decoration: none;
@@ -199,7 +206,7 @@ nav {
 .selector-label {
     position: absolute;
     left: 0; right: 0; bottom: 0;
-    padding: 1.2rem 1.4rem;
+    padding: clamp(0.8rem, 2vh, 1.2rem) clamp(1rem, 2vw, 1.4rem);
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
@@ -207,7 +214,7 @@ nav {
 }
 
 .selector-kicker {
-    font-size: 0.7rem;
+    font-size: clamp(0.6rem, 1vw, 0.7rem);
     text-transform: uppercase;
     letter-spacing: 2px;
     color: var(--accent-color);
@@ -215,15 +222,15 @@ nav {
 
 .selector-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
+    font-size: clamp(1.4rem, 4vw, 1.8rem);
     font-style: italic;
     color: #fff;
 }
 
 @media (max-width: 600px) {
-    .hero-selector { flex-direction: column; }
-    .selector-panel { height: 140px; }
-    #hero-title { font-size: 3rem; }
+    .hero-selector { flex-direction: column; width: 90vw; }
+    .selector-panel { height: 130px; }
+    .hero-content p { font-size: 0.9rem; }
 }
 
 /* =========================================
@@ -232,6 +239,7 @@ nav {
 .fullscreen-carousel {
     position: relative;
     height: 100vh;
+    height: 100dvh;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -261,7 +269,7 @@ nav {
 
 .fs-section-label {
     position: absolute;
-    top: 6.5rem;
+    top: clamp(4rem, 10vh, 6.5rem);
     left: 50%;
     transform: translateX(-50%);
     z-index: 2;
@@ -269,7 +277,7 @@ nav {
     font-style: italic;
     letter-spacing: 3px;
     text-transform: uppercase;
-    font-size: 0.85rem;
+    font-size: clamp(0.7rem, 1.2vw, 0.85rem);
     color: var(--accent-color);
     opacity: 0.85;
 }
@@ -279,11 +287,11 @@ nav {
     z-index: 2;
     width: 100%;
     max-width: 1400px;
-    height: 78vh;
+    height: min(78vh, 750px);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 5vw;
+    padding: 0 clamp(1rem, 5vw, 5rem);
 }
 
 .carousel-track {
@@ -301,9 +309,11 @@ nav {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    /* Parallax se aplica via variables JS */
+    /* Parallax se aplica via JS */
     transform: translate(var(--px, 0px), var(--py, 0px));
     transition: transform 0.15s ease-out;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .carousel-slide img {
@@ -321,11 +331,6 @@ nav {
     transform: scale(1.02);
 }
 
-/* Ajuste para que el hover scale no pelee con el parallax */
-.carousel-slide:hover {
-    /* el transform lo controla JS, pero el hover se aplica a la img */;
-}
-
 .carousel-arrow {
     position: absolute;
     top: 50%;
@@ -333,10 +338,10 @@ nav {
     background: rgba(10, 10, 10, 0.5);
     border: 1px solid rgba(255,255,255,0.25);
     color: #fff;
-    width: 50px;
-    height: 50px;
+    width: clamp(38px, 4vw, 50px);
+    height: clamp(38px, 4vw, 50px);
     border-radius: 50%;
-    font-size: 1.8rem;
+    font-size: clamp(1.2rem, 2vw, 1.8rem);
     line-height: 1;
     display: flex;
     align-items: center;
@@ -353,8 +358,8 @@ nav {
     transform: translateY(-50%) scale(1.08);
 }
 
-.carousel-arrow.prev { left: 2.5vw; }
-.carousel-arrow.next { right: 2.5vw; }
+.carousel-arrow.prev { left: clamp(0.5rem, 2vw, 2.5rem); }
+.carousel-arrow.next { right: clamp(0.5rem, 2vw, 2.5rem); }
 
 .fs-caption {
     position: relative;
@@ -362,16 +367,17 @@ nav {
     text-align: center;
     margin-top: 0.8rem;
     min-height: 3.5rem;
+    padding: 0 1rem;
 }
 
 .fs-caption .cap-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
+    font-size: clamp(1rem, 2.2vw, 1.4rem);
     font-style: italic;
 }
 
 .fs-caption .cap-meta {
-    font-size: 0.85rem;
+    font-size: clamp(0.75rem, 1.2vw, 0.85rem);
     opacity: 0.65;
     margin-top: 0.3rem;
 }
@@ -381,18 +387,17 @@ nav {
     justify-content: center;
     gap: 0.4rem;
     margin-top: 0.4rem;
-    font-size: 1.4rem;
+    font-size: clamp(1.2rem, 2vw, 1.4rem);
 }
 
 /* =========================================
-   ESTRELLAS CON GLOW Y PULSACIÓN SINCRONIZADA
+   ESTRELLAS SINCRONIZADAS CON GLOW
    ========================================= */
 .cap-rating .star {
     display: inline-block;
     color: var(--accent-color);
     text-shadow: 0 0 8px var(--accent-color), 0 0 20px var(--accent-color);
     animation: starPulse 2.4s ease-in-out infinite;
-    /* Sin retraso para que todas vayan al unísono */
 }
 
 @keyframes starPulse {
@@ -415,19 +420,23 @@ nav {
     z-index: 2;
     display: flex;
     justify-content: center;
-    gap: 0.6rem;
-    margin-top: 1.2rem;
+    gap: clamp(0.4rem, 1vw, 0.6rem);
+    margin-top: clamp(0.8rem, 2vh, 1.2rem);
     flex-wrap: wrap;
-    max-width: 80vw;
+    max-width: 90vw;
 }
 
 .carousel-dot {
-    width: 9px;
-    height: 9px;
+    width: clamp(8px, 1.2vw, 9px);
+    height: clamp(8px, 1.2vw, 9px);
     border-radius: 50%;
     background: rgba(255,255,255,0.25);
     border: none;
     transition: background 0.3s ease, transform 0.3s ease;
+    /* Touch friendly */
+    padding: 0;
+    min-width: 8px;
+    min-height: 8px;
 }
 
 .carousel-dot.active {
@@ -435,11 +444,60 @@ nav {
     transform: scale(1.3);
 }
 
-@media (max-width: 700px) {
-    .fs-frame { height: 60vh; }
-    .carousel-arrow { width: 38px; height: 38px; font-size: 1.4rem; }
-    .carousel-arrow.prev { left: 3vw; }
-    .carousel-arrow.next { right: 3vw; }
+/* =========================================
+   TABLETS Y PANTALLAS MEDIANAS
+   ========================================= */
+@media (max-width: 1024px) {
+    .fs-frame {
+        height: min(65vh, 600px);
+        padding: 0 1.5rem;
+    }
+    .carousel-arrow {
+        width: 36px;
+        height: 36px;
+        font-size: 1.2rem;
+    }
+    .carousel-arrow.prev { left: 0.8rem; }
+    .carousel-arrow.next { right: 0.8rem; }
+    .fs-section-label {
+        top: clamp(3.5rem, 8vh, 5rem);
+    }
+}
+
+/* =========================================
+   MÓVILES PEQUEÑOS
+   ========================================= */
+@media (max-width: 480px) {
+    .fs-frame {
+        height: min(55vh, 420px);
+        padding: 0 0.5rem;
+    }
+    .carousel-arrow {
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+        background: rgba(0,0,0,0.6);
+    }
+    .carousel-arrow.prev { left: 0.3rem; }
+    .carousel-arrow.next { right: 0.3rem; }
+    .fs-caption .cap-title {
+        font-size: 0.95rem;
+    }
+    .fs-caption .cap-meta {
+        font-size: 0.7rem;
+    }
+    .carousel-dot {
+        width: 7px;
+        height: 7px;
+        min-width: 7px;
+        min-height: 7px;
+    }
+    .selector-panel {
+        height: 110px;
+    }
+    .selector-title {
+        font-size: 1.2rem;
+    }
 }
 
 /* =========================================
@@ -449,7 +507,7 @@ nav {
     text-align: center;
     padding: 2.5rem 1rem;
     opacity: 0.5;
-    font-size: 0.8rem;
+    font-size: clamp(0.7rem, 1vw, 0.8rem);
     letter-spacing: 1px;
 }
 
@@ -530,7 +588,7 @@ a, button { cursor: none; }
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 3rem 2rem;
+    padding: 1.5rem;
 }
 
 .lightbox.open { display: flex; }
@@ -564,24 +622,24 @@ a, button { cursor: none; }
 
 .lightbox-close {
     position: fixed;
-    top: 1.5rem;
-    right: 2rem;
+    top: clamp(1rem, 3vh, 1.5rem);
+    right: clamp(1rem, 3vw, 2rem);
     background: none;
     border: none;
     color: #fff;
-    font-size: 2.2rem;
+    font-size: clamp(1.8rem, 4vw, 2.2rem);
     z-index: 5;
 }
 
 /* =========================================
-   BOTÓN FLOTANTE DE INSTAGRAM (discreto)
+   BOTÓN FLOTANTE DE INSTAGRAM
    ========================================= */
 .ig-floating-btn {
     position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    width: 50px;
-    height: 50px;
+    bottom: clamp(1rem, 3vh, 2rem);
+    right: clamp(1rem, 3vw, 2rem);
+    width: clamp(40px, 5vw, 50px);
+    height: clamp(40px, 5vw, 50px);
     border-radius: 50%;
     background: rgba(212, 175, 55, 0.15);
     border: 1px solid var(--accent-color);
@@ -590,7 +648,7 @@ a, button { cursor: none; }
     align-items: center;
     justify-content: center;
     font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 2vw, 1.3rem);
     font-style: italic;
     text-decoration: none;
     backdrop-filter: blur(6px);
@@ -611,4 +669,18 @@ a, button { cursor: none; }
     background: var(--accent-color);
     color: #0a0a0a;
     transform: scale(1.1);
+}
+
+/* =========================================
+   PARTÍCULAS EN EL HERO
+   ========================================= */
+#particles-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1.5; /* Justo encima del overlay (z-index:1) y debajo del contenido (z-index:2) */
+    pointer-events: none; /* Para que no interfiera con los botones */
+    display: block;
 }
