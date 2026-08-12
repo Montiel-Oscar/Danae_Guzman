@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         animateOutline();
 
         function bindHoverables() {
-            const hoverables = document.querySelectorAll('a, button, .carousel-slide, .selector-panel');
+            const hoverables = document.querySelectorAll('a, button, .carousel-slide, .folder-item');
             hoverables.forEach(el => {
                 el.addEventListener('mouseenter', () => cursorOutline.classList.add('hovering'));
                 el.addEventListener('mouseleave', () => cursorOutline.classList.remove('hovering'));
@@ -47,6 +47,31 @@ document.addEventListener("DOMContentLoaded", () => {
             const x = (window.innerWidth / 2 - e.pageX) / 40;
             const y = (window.innerHeight / 2 - e.pageY) / 40;
             heroContent.style.transform = `translate(${x}px, ${y}px)`;
+        });
+    }
+
+    /* =========================================
+       1.5 GLOW DE FONDO AL HACER HOVER SOBRE UN FOLDER
+       ========================================= */
+    const heroGlow = document.getElementById('hero-hover-glow');
+    const folderItems = document.querySelectorAll('.folder-item');
+    if (heroGlow && folderItems.length) {
+        folderItems.forEach(folder => {
+            const color = folder.dataset.glow;
+            folder.addEventListener('mouseenter', () => {
+                if (color) heroGlow.style.setProperty('--glow-color', color);
+                heroGlow.classList.add('active');
+            });
+            folder.addEventListener('mouseleave', () => {
+                heroGlow.classList.remove('active');
+            });
+            folder.addEventListener('focus', () => {
+                if (color) heroGlow.style.setProperty('--glow-color', color);
+                heroGlow.classList.add('active');
+            });
+            folder.addEventListener('blur', () => {
+                heroGlow.classList.remove('active');
+            });
         });
     }
 
@@ -343,14 +368,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (window.__bindHoverables) window.__bindHoverables();
 
     /* =========================================
-       7. BOTÓN FLOTANTE DE INSTAGRAM
+       7. BOTONES FLOTANTES (Instagram + Volver al inicio)
        ========================================= */
     const floatingBtn = document.getElementById('ig-floating-btn');
+    const backToTopBtn = document.getElementById('back-to-top-btn');
     const heroEl = document.getElementById('hero');
-    if (floatingBtn && heroEl) {
+    if (heroEl) {
         const heroObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                floatingBtn.classList.toggle('visible', !entry.isIntersecting);
+                const outsideHero = !entry.isIntersecting;
+                if (floatingBtn) floatingBtn.classList.toggle('visible', outsideHero);
+                if (backToTopBtn) backToTopBtn.classList.toggle('visible', outsideHero);
             });
         }, { threshold: 0 });
         heroObserver.observe(heroEl);
@@ -367,7 +395,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }, { threshold: 0.15 });
 
-    const elementsToAnimate = document.querySelectorAll('.fs-frame, .fs-caption, .carousel-dots, .fs-section-label');
+    const elementsToAnimate = document.querySelectorAll('.fs-frame, .fs-caption, .carousel-dots, .fs-section-label, .placeholder-title, .placeholder-text, .placeholder-link');
     elementsToAnimate.forEach(el => {
         el.classList.add('hidden-scroll');
         observer.observe(el);
