@@ -37,47 +37,33 @@
             <p>bookish_db</p>
         </div>
 
-        <!-- Stack de folders: navegación principal (sin Behind the Notes) -->
+        <!-- Stack de folders: orden invertido (Vlogs → Art → Books → About) -->
         <nav class="folder-stack" id="folder-stack" aria-label="Secciones">
-            <a href="#libros" class="folder-item folder-pink" style="--i:0" data-glow="rgba(221, 139, 171, 0.5)">
-                <span class="folder-label">Books</span>
+            <a href="#vlogs" class="folder-item folder-navy" style="--i:0" data-glow="rgba(54, 88, 148, 0.55)">
+                <span class="folder-label">Vlogs &amp; Life</span>
             </a>
-            <a href="#about" class="folder-item folder-brown" style="--i:1" data-glow="rgba(180, 138, 90, 0.5)">
-                <span class="folder-label">About Me</span>
-            </a>
-            <a href="#arte" class="folder-item folder-beige" style="--i:2" data-glow="rgba(196, 175, 120, 0.45)">
+            <a href="#arte" class="folder-item folder-beige" style="--i:1" data-glow="rgba(196, 175, 120, 0.45)">
                 <span class="folder-label">Art</span>
             </a>
-            <a href="#vlogs" class="folder-item folder-navy" style="--i:3" data-glow="rgba(54, 88, 148, 0.55)">
-                <span class="folder-label">Vlogs &amp; Life</span>
+            <a href="#libros" class="folder-item folder-pink" style="--i:2" data-glow="rgba(221, 139, 171, 0.5)">
+                <span class="folder-label">Books</span>
+            </a>
+            <a href="#about" class="folder-item folder-brown" style="--i:3" data-glow="rgba(180, 138, 90, 0.5)">
+                <span class="folder-label">About Me</span>
             </a>
         </nav>
     </header>
 
     <main>
-        <!-- ================= LIBROS: pantalla completa ================= -->
-        <section id="libros" class="fullscreen-carousel">
-            <div class="fs-bg" id="libros-bg-a"></div>
-            <div class="fs-bg" id="libros-bg-b"></div>
-            <span class="fs-section-label">Books</span>
-            <button class="carousel-arrow prev" id="libros-prev" aria-label="Anterior">‹</button>
-            <button class="carousel-arrow next" id="libros-next" aria-label="Siguiente">›</button>
-            <div class="fs-frame">
-                <div class="carousel-track" id="libros-track"></div>
-            </div>
-            <div class="fs-caption" id="libros-caption"></div>
-            <div class="carousel-dots" id="libros-dots"></div>
+        <!-- ================= 1. VLOGS & LIFE (placeholder) ================= -->
+        <section id="vlogs" class="placeholder-section theme-navy">
+            <span class="fs-section-label">Vlogs & Life</span>
+            <h2 class="placeholder-title">Vlogs &amp; Life</h2>
+            <p class="placeholder-text">Un vistazo más personal, fuera de las páginas y los lienzos. Próximamente.</p>
+            <a href="#hero" class="placeholder-link">Volver al inicio ↑</a>
         </section>
 
-        <!-- ================= ABOUT ME (placeholder) ================= -->
-        <section id="about" class="placeholder-section theme-brown">
-            <span class="fs-section-label">About Me</span>
-            <h2 class="placeholder-title">About Me</h2>
-            <p class="placeholder-text">La historia detrás de Danae Guzmán: artista y lectora. Próximamente.</p>
-            <a href="#arte" class="placeholder-link">Mientras tanto, ver Art →</a>
-        </section>
-
-        <!-- ================= ARTE: pantalla completa ================= -->
+        <!-- ================= 2. ARTE: pantalla completa ================= -->
         <section id="arte" class="fullscreen-carousel">
             <div class="fs-bg" id="arte-bg-a"></div>
             <div class="fs-bg" id="arte-bg-b"></div>
@@ -91,12 +77,26 @@
             <div class="carousel-dots" id="arte-dots"></div>
         </section>
 
-        <!-- ================= VLOGS & LIFE (placeholder) ================= -->
-        <section id="vlogs" class="placeholder-section theme-navy">
-            <span class="fs-section-label">Vlogs & Life</span>
-            <h2 class="placeholder-title">Vlogs &amp; Life</h2>
-            <p class="placeholder-text">Un vistazo más personal, fuera de las páginas y los lienzos. Próximamente.</p>
-            <a href="#hero" class="placeholder-link">Volver al inicio ↑</a>
+        <!-- ================= 3. LIBROS: pantalla completa ================= -->
+        <section id="libros" class="fullscreen-carousel">
+            <div class="fs-bg" id="libros-bg-a"></div>
+            <div class="fs-bg" id="libros-bg-b"></div>
+            <span class="fs-section-label">Books</span>
+            <button class="carousel-arrow prev" id="libros-prev" aria-label="Anterior">‹</button>
+            <button class="carousel-arrow next" id="libros-next" aria-label="Siguiente">›</button>
+            <div class="fs-frame">
+                <div class="carousel-track" id="libros-track"></div>
+            </div>
+            <div class="fs-caption" id="libros-caption"></div>
+            <div class="carousel-dots" id="libros-dots"></div>
+        </section>
+
+        <!-- ================= 4. ABOUT ME (placeholder) ================= -->
+        <section id="about" class="placeholder-section theme-brown">
+            <span class="fs-section-label">About Me</span>
+            <h2 class="placeholder-title">About Me</h2>
+            <p class="placeholder-text">La historia detrás de Danae Guzmán: artista y lectora. Próximamente.</p>
+            <a href="#arte" class="placeholder-link">Mientras tanto, ver Art →</a>
         </section>
     </main>
 
